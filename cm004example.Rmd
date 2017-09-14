@@ -1,28 +1,32 @@
 ---
 title: "cm04"
-output: github_document
+output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+This is a new line of text
+
+## This is my header
+
+- bullet 1
+- bullet 2
+
+```{r}
+x <- rnorm(100)
+y <- rnorm(100)
+plot(x, y)
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+summary(x)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+there are a number of options for the output or the chunk that you include directly in the chunck space, for example I used a different size for the graph, but it will only be visible in the source code
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r, fig.width= 4, fig.height= 4}
+#this is a comment
+x <- rnorm(100)
+y <- rnorm(100)
+plot(x, y)
 ```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
