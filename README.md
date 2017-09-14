@@ -1,3 +1,5 @@
 # STAT545
 
-This is my local conflict
+A practice repo for all live coding in class
+
+Lets create a remote conflict
