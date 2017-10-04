@@ -1,0 +1,99 @@
+---
+title: "cm009 Notes and Exercises: Table Joins"
+date: '2017-10-03'
+output: github_document
+---
+
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(gapminder))
+```
+
+## notes from class
+```{r}
+library("nycflights13")
+# Drop unimportant variables so it's easier to understand the join results.
+flights2 <- flights %>% select(year:day, hour, origin, dest, tailnum, carrier)
+flights2 %>% 
+  left_join(airlines)
+#> Joining, by = "carrier"
+#> # A tibble: 336,776 x 9
+#>    year month   day  hour origin dest  tailnum carrier name               
+#>   <int> <int> <int> <dbl> <chr>  <chr> <chr>   <chr>   <chr>              
+#> 1  2013     1     1  5.00 EWR    IAH   N14228  UA      "United Air Lines …
+#> 2  2013     1     1  5.00 LGA    IAH   N24211  UA      "United Air Lines …
+#> 3  2013     1     1  5.00 JFK    MIA   N619AA  AA      "American Airlines…
+#> 4  2013     1     1  5.00 JFK    BQN   N804JB  B6      "JetBlue Airways"  
+#> 5  2013     1     1  6.00 LGA    ATL   N668DN  DL      "Delta Air Lines I…
+#> # ... with 3.368e+05 more rows
+
+```
+
+Notes: left-join will match info from the first database with the second one by a matching variable, and will add the rest of the columns that are not in the other one.
+It only keeps the original dataframe
+
+inner-join will match by common rows (eliminate the other ones)
+outer-join wlll keep rows from both dataframes
+check on Jenny Bryan examples [here](http://stat545.com/bit001_dplyr-cheatsheet.html)
+
+
+
+After going through the `dplyr` [vignette](https://cran.r-project.org/web/packages/dplyr/vignettes/two-table.html) on "two-table verbs", we'll work on the following exercises.
+
+
+Consider the following areas of countries, in hectares:
+
+```{r}
+(areas <- data.frame(country=c("Canada", "United States", "India", "Vatican City"),
+                     area=c(998.5*10^6, 983.4*10^6, 328.7*10^6, 44)) %>% 
+     as.tbl)
+```
+
+
+1. To the `gapminder` dataset, add an `area` variable using the `areas` tibble. Be sure to preserve all the rows of the original `gapminder` dataset.
+
+```{r}
+gapminder%>% 
+  left_join(areas)
+```
+
+2. To the `gapminder` dataset, add an `area` variable using the `areas` tibble, but only keeping obervations for which areas are available. 
+
+```{r}
+gapminder %>% 
+  inner_join(areas)  #only rows
+```
+
+3. Use a `_join` function to output the rows in `areas` corresponding to countries that _are not_ found in the `gapminder` dataset. 
+
+```{r}
+anti_join(areas, gapminder)
+```
+
+
+4. Use a `_join` function to output the rows in `areas` corresponding to countries that _are_ found in the `gapminder` dataset. 
+```{r}
+semi_join(areas, gapminder)
+```
+
+5. Construct a tibble that joins `gapminder` and `areas`, so that all rows found in each original tibble are also found in the final tibble. 
+```{r}
+full_join(gapminder, areas)
+```
+
+6. Subset the `gapminder` dataset to have countries that are only found in the `areas` data frame. 
+
+```{r}
+semi_join(gapminder, areas)
+```
+
+
+7. Subset the `gapminder` dataset to have countries that are _not_ found in the `areas` data frame. 
+```{r}
+anti_join(gapminder, areas)
+```
+```{r}
+anti_join(gapminder, areas) %>% 
+  filter(country == "Canada")
+```
+

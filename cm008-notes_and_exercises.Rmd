@@ -426,6 +426,8 @@ gapminder %>%
   group_by(country) %>% 
   summarize(pop_chg = diff(pop))
 
+#aggregate function. takes a vector and summarize it in a single value
+
 gapminder %>% 
   group_by(country) %>% 
   summarise(pop_chg = pop[year == 1972] - pop[year == 1962])
@@ -436,19 +438,55 @@ _note_: we need to use summarize because mutate will preserve the number of rows
 ```{r}
 gapminder %>% 
   group_by(country) %>% 
-  mutate(popbill = pop*0.0000001)
+  mutate(popbill = pop/1000000000)
+#vectorized: takes each component of the vector independently
 ```
 
 3. lagged dgppercap
 ```{r}
 gapminder %>% 
   group_by(country) %>% 
-  mutate(gdpPercap, prev = lag(gdpPercap))
+  arrange(year) %>% 
+  mutate(lag_gdp = lag(gdpPercap)) %>% 
+  filter(!is.na(lag_gdp))
+
+# window: takes a vector, returns a vector of same length and depend on values in vector
+# you can also move them forward or move them by 2
 ```
 
 
 
 __Exercise 2__: For the `gapminder` dataset, make a spaghetti plot showing the population trend (in millions) over time for each country, facetted by continent. Make as many of the following modifications as you can:
+
+```{r}
+gapminder %>% 
+  ggplot(aes(year, pop, group = country)) +
+  facet_wrap(~ continent) +
+  geom_line(alpha = 0.2, colour = )
+
+```
+
+```{r}
+gapminder %>% 
+  group_by(country) %>% 
+  mutate(max_gdpPercap = max(gdpPercap)) %>% 
+  ggplot(aes(year, pop/10^6)) +
+  facet_wrap(~ continent) +
+  geom_line(aes(group = country,
+                colour = log(max_gdpPercap)),
+            alpha = 0.25) +
+  theme_bw() +
+  labs(title = "Population trends") +
+  scale_y_log10("Population (millions)",
+                breaks = c(0.1,1,10,1000),
+                labels = c(0.1,1,10,1000)) +
+  scale_x_continuous("", breaks = c(1950,1975, 2000)) +
+  theme(axis.text.x = element_text(angle = 90),
+      plot.title = element_text(hjust = 0.5),
+      legend.position = "bottom")
+```
+
+
 
 - Colour each line by the log maximum gdpPercap experienced by the country.
 - Rotate the x-axis labels to be vertical.
