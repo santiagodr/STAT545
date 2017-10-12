@@ -1,0 +1,169 @@
+---
+title: "cm12"
+author: "Santiago David"
+date: '2017-10-12'
+output: github_document
+---
+
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(gapminder))
+```
+
+More on typeof/class
+
+```{r}
+typeof("A") #character
+typeof(1) #numeric
+typeof(gapminder)
+typeof(mtcars) #
+typeof(lm) # function
+typeof(TRUE) #logical (Boolean)
+typeof(c) #builtin
+
+class("A")
+class(1)
+class(gapminder)
+class(mtcars)
+class(lm)
+class(c)
+```
+We can also create a list
+```{r}
+x <- list(number_of_cats = 1, cat_color = "red")
+typeof(x)
+class(x)
+```
+
+Other type is matrix, matrices need the same type of objects, if there are characters, the matrix will force everything to be a character
+
+```{r}
+my_mat <- matrix(c(1,2,3,4), nrow = 2, byrow = TRUE)
+my_mat
+```
+
+looking at singer 
+```{r}
+library(singer)
+data("singer_locations")
+```
+
+# change a type of variable in singer_locations from its type
+```{r}
+copy <- singer_locations
+str(singer_locations)
+as.numeric(copy$track_id[1])
+
+#also
+glimpse(copy)
+#now we change that type
+copy[1,8] <- "long"
+```
+
+### Factors
+
+```{r}
+glimpse(gapminder)
+```
+
+Factor is a tabular way of looking at strings??, there is a relationship between a number and a level, so what it means for that number
+
+Library to inspect factors
+```{r}
+install.packages("forcats")
+library(forcats)
+library(singer)
+```
+
+lets work on singer database
+
+```{r}
+data("singer_locations")
+glimpse(singer_locations)
+```
+
+Transforming into a factor
+
+```{r}
+sl <- singer_locations %>% 
+  mutate(artist_factor =  as_factor(artist_name))
+glimpse(sl)
+```
+
+we can also do it using base R
+```{r}
+sl <- sl %>% 
+  mutate(artist_factor_base = factor(artist_name))
+glimpse(sl)
+```
+
+```{r}
+x <- c("a", "b", "c")
+as_factor(x)
+factor(x)
+```
+
+When we use base R to asign factor levels, R will do it alphabetically, which might not be what we need, `as_factor` on the other hand maintains the order we have.
+
+Now, we can start playing with the factors
+
+```{r}
+sl %>% 
+  mutate(top_an = fct_lump(artist_factor, n = 10)) %>%  #lumping function to have one group of other
+  count(top_an) %>%
+  arrange(-n)
+```
+
+
+### Homework: plot mean duration by artist with and without lumping
+
+```{r}
+summarise(mean_duration = mean(duration)) %>% 
+  ggplot(aes(x = artist_name, ....))
+```
+
+### now we can use cities
+```{r}
+sl <- sl %>% 
+  mutate(city_factor = as.factor(city))
+glimpse(sl)
+```
+
+In case there are NA's conflicting the levels, we can use `ifelse` to name those missing info
+
+```{r}
+sl <- sl %>% 
+  mutate(city_factor = ifelse(is.na(city),
+                              "Missing information", 
+                              city),
+  city_factor = as_factor(city_factor))
+
+```
+
+Now, we look 
+```{r}
+sl %>% 
+  mutate(top_cities = fct_lump(city_factor, n = 7)) %>% 
+  count(top_cities)
+```
+
+### homework challenge
+use `forcats` to clean up the city stuff. So, basically rename factors
+forcats::as_factors
+
+
+
+### Reading and writing to file
+
+`read_csv` which is different than `read.csv`, and apparently make the process easier by identifying the variables better
+
+`readxl` is another useful function 
+
+```{r}
+install.packages("readxl")
+```
+
+`readxl::read_xlsx()` directly takes that file form excel
+
+`write_csv` do the opposite, write the file
+
