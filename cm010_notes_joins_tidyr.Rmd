@@ -1,0 +1,184 @@
+---
+title: "cm010 - cm11 Notes"
+author: "Santiago D"
+date: '2017-10-05'
+output: github_document
+---
+
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(gapminder))
+```
+
+Different types of joins (from previous class): `left_join`,`inner_join`...etc
+
+```{r}
+install.packages("devtools") #if you dont have it
+library(devtools)
+install_github("JoeyBernhardt/singer")
+library(singer)
+```
+
+Load singer
+
+```{r}
+data("songs")
+data("locations")
+glimpse(locations)
+glimpse(songs)
+```
+
+### get a dataframe with release and year
+get a dataframe with all albums, artists and the year in which album was published
+```{r}
+songs %>% 
+  right_join(locations) %>% 
+  select(release, artist_name, year)
+
+# We can just try all
+relartyear <- inner_join(locations, songs, by = "title") %>% 
+  select(release, artist_name.x, year)
+View(relartyear)
+```
+
+we can also join with artist name so this variable is not duplicate
+```{r}
+relartyear <- inner_join(locations, songs, by = c("artist_name","title")) %>% 
+  select(release, artist_name, year)
+View(relartyear)
+```
+
+### exercise
+Try to get the number of releases per year
+
+```{r}
+relartyear %>% 
+  group_by(year) %>% 
+  summarise(release.per.year = count(year))
+
+inner_join(songs,locations, by = "title") %>% 
+  count(year)
+
+```
+note: inner_join is symmetric, so doesn't matter which is the order
+
+### RESHAPING
+
+```{r}
+data("singer_locations")
+glimpse(singer_locations)
+?singer_locations
+View(singer_locations)
+```
+
+**WIDE** dataframe vs **LONG** dataframe
+
+Lets get year, artist_hotttnesss, artist_familiarity, duration
+```{r}
+hfd_y <- singer_locations %>% 
+  select(year, artist_hotttnesss, artist_familiarity, duration)
+
+hfd_y %>% 
+  filter(year > 1900) %>% 
+  ggplot(aes(x = year, y = artist_hotttnesss)) +
+  geom_point()
+```
+
+package `tidyr`, `gather()`: from wide to long
+
+```{r}
+hfd_y_long <- hfd_y %>% 
+  gather(key = "Measure", value = "Units", artist_hotttnesss:duration)
+View(hfd_y)
+View(hfd_y_long)
+```
+now, we graph from this long format
+```{r}
+plot3 <- hfd_y_long %>%
+  filter(year > 1900) %>% 
+  ggplot(aes(year, Units)) +
+  geom_point() +
+  facet_wrap(~ Measure, scales = "free_y")  #find a way to display the scale better
+```
+
+### more notes from oct 10
+
+```{r}
+hfd_y <- singer_locations %>%
+  select(year, duration, artist_familiarity, artist_hotttnesss) %>% 
+  gather(key = "Measures", value = "My_value",
+         duration:artist_familiarity)
+```
+
+### Doomed challenge 1
+Bring hfd_y in the wide format
+
+```{r}
+hfd_y %>% 
+  spread(Measures, My_value)
+```
+
+We can't spread this info, because years have different values for the variables, so spread doesn't know what to do with those values
+
+
+### challenge 2 fix hdf_y to include identifiers
+
+```{r}
+hfd_y <- singer_locations %>%
+  select(year, song_id, duration, artist_familiarity, artist_hotttnesss) %>% 
+  gather(key = "Measures", value = "My_value",
+         duration:artist_familiarity)
+
+hfd_y %>% 
+  spread(Measures, My_value)
+```
+
+Now, we try reshape2
+
+```{r}
+install.packages("reshape2")
+library(reshape2)
+```
+
+reshape has other related functions to do the same tasks
+
+`dcast` is another function that allows you to calculate summarize stats from the groups of values
+
+```{r}
+hfd_y_mean <- hfd_y %>% 
+      dcast(year ~ Measures, 
+        value.var = "My_value",
+        fun.aggregate = mean, na.rm = TRUE)
+View(hfd_y_mean)
+```
+
+### Now, getting back to concepts
+R has many types of objects in its environment
+
+class vs type
+
+- functions
+- lists
+- dataframe
+- character
+- double
+- numeric (class)
+- 
+
+### Challenge 3: what is a plot
+```{r}
+typeof(plot3)
+class(plot3)
+```
+
+### Challenge 4 what is a pipe %>% 
+```{r}
+typeof(`%>%`)  # you have to use "comillas"
+class(`%>%`)
+
+class(`<-`)
+`<-`(y,13)
+y
+
+```
+
