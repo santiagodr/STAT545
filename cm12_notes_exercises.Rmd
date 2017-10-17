@@ -177,19 +177,15 @@ sl %>%
   count(top_cities)
 ```
 
-
-
 ### Reading and writing to file
-
-`read_csv` which is different than `read.csv`, and apparently make the process easier by identifying the variables better
+`read_csv` which is different than `read.csv`, and apparently make the process easier by identifying 
+the variables better, have to check the full functionality
+`write_csv` do the opposite, write the file
 
 `readxl` is another useful function 
-
 ```{r}
 #install.packages("readxl")
 ```
-
 `readxl::read_xlsx()` directly takes that file form excel
 
-`write_csv` do the opposite, write the file
 
