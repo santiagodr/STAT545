@@ -70,7 +70,7 @@ Factor is a tabular way of looking at strings??, there is a relationship between
 
 Library to inspect factors
 ```{r}
-install.packages("forcats")
+#install.packages("forcats")
 library(forcats)
 library(singer)
 ```
@@ -118,8 +118,8 @@ sl %>%
 ### Homework: plot mean duration by artist with and without lumping
 
 ```{r}
-summarise(mean_duration = mean(duration)) %>% 
-  ggplot(aes(x = artist_name, ....))
+#summarise(mean_duration = mean(duration)) %>% 
+  #ggplot(aes(x = artist_name, ....))
 ```
 
 ### now we can use cities
@@ -160,7 +160,7 @@ forcats::as_factors
 `readxl` is another useful function 
 
 ```{r}
-install.packages("readxl")
+#install.packages("readxl")
 ```
 
 `readxl::read_xlsx()` directly takes that file form excel
