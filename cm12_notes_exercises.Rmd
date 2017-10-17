@@ -117,10 +117,27 @@ sl %>%
 
 ### Homework: plot mean duration by artist with and without lumping
 
+First, we can try without...
+
 ```{r}
-#summarise(mean_duration = mean(duration)) %>% 
-  #ggplot(aes(x = artist_name, ....))
+sl %>% 
+  group_by(artist_name) %>% 
+  summarise(mean_duration = mean(duration)) %>% 
+  ggplot(aes(x = artist_name, y = mean_duration))
 ```
+
+Now, we can use the factor to create the plot
+
+```{r}
+sl %>% 
+  mutate(top_an = fct_lump(artist_factor, n = 5)) %>% 
+  group_by(top_an) %>% 
+  summarise(mean_duration = mean(duration)) %>% 
+  ggplot(aes(x = top_an, y = mean_duration)) +
+  geom_point()
+```
+
+
 
 ### now we can use cities
 ```{r}
@@ -150,6 +167,15 @@ sl %>%
 ### homework challenge
 use `forcats` to clean up the city stuff. So, basically rename factors
 forcats::as_factors
+
+```{r}
+sl %>% 
+  mutate(city_factor = fct_recode(city_factor,
+                                  "New York, NY" = "NY - New York City",
+                                  "Los Angeles, CA" = "California - LA")) %>% 
+  mutate(top_cities = fct_lump(city_factor, n = 7)) %>% 
+  count(top_cities)
+```
 
 
 
