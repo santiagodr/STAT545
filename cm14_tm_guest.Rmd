@@ -1,0 +1,60 @@
+---
+title: "Visualization_Tamara_Munzner"
+author: "Santiago David"
+date: '2017-10-19'
+output: github_document
+---
+
+Guest Lecture: Tamara Munzner
+- Four different levels to describe visualization
+- A nested model of 
+What?
+- Datasets and data: Data can be described in tables, networks, spatial (fields and geometry), and also be of different types, categorical, or ordered (ordinal, quantitative).
+- Ordering direction
+Why?
+Actions:
+- Analyze = consuming the data because of discovering
+- Produce = Obtain derived data (strategy for handling complexity), such as centrality metrics for trees/networks
+- Query = How much data matters?
+- Independent choices
+
+Targets:
+- All data: trends, outliers, features
+- Attribute : distribution (one), dependency, correlation (many)
+- Network
+- Spatial (shape)
+
+How?
+- First encode (also)
+marks (geometric), channels (control appareance of marks), visual encoding (multiple channels)
+Channels are of Magnitude (ordered attributes) / Identity channels (categorical). some of these channels are more effective for humans than others... For instance position on a common scale is a very effective one. 
+
+Separability vs Integrality
+Example. From position and hue to Red + Green colors with small dots (integral hue)
+
+Grouping
+
+Color (ordered and categorical)
+Color can actually be decomposed in three channels, intensity, saturation and hue
+Rainbow is a poor default (nonlinear)
+One good resource is viridis (R/Python)
+
+Keys and values
+- Only values, no key - scatterplot
+- Some keys (categorical regions) 
+- One key one value (line chart/dot plot). no line for categorical, better to use bars
+- two keys, one value (heatmap)
+
+Orientation
+glyphmas for ciclyc patterns vs linear patterns
+
+Spatial data
+- normalized data vs absolute data... most maps only show a trend of population density
+
+Netword data
+force-directed placement, clusters are visible but position sometimes arbitrary
+Other options are adjacency matrix view, 
+Trees - containment vs connection, 
+
+www.cs.ubc.ca/~tmm/talks.html/#vad17stat545
+
