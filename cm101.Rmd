@@ -1,0 +1,209 @@
+---
+title: "cm101"
+author: "Santiago David"
+date: '2017-10-24'
+output: github_document
+---
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(singer))
+suppressPackageStartupMessages(library(stringr))
+```
+
+# R for strings
+
+```{r}
+my_string <- "Surrounded by quotes, any text"
+my_string
+
+my_string2 <- 'if you use single quotes, "you have to close with single quotes". '
+my_string2
+```
+
+A slash \ is a special character that can't be included by itself, because it has a meaning in r language
+
+```{r}
+my_string3 <- " A slash \ "
+my_string3
+my_string3 <- " A slash \\"
+```
+
+### Challenge: How do I "string" a single slash?
+
+```{r}
+my_string4 <- `my_string`
+my_string5 <- 'my_string'
+my_string6 <- "my_string"
+my_string4 == my_string5
+my_string5 == my_string6
+```
+
+this is called vec quotes ` `, they can surround strange and conflictive characters
+
+```{r}
+places <- unique(singer_locations$city) #get all cities
+str(places)
+```
+
+nchar() takes a vector of strings and return its length
+
+```{r}
+nchar(c("city", "double", "a very long string"))
+nchar(c("", NA, " ", "    ", " a "))
+nchar(c("  ", "\t")) # a tab which is a special character, and \t which simbolizes a tab
+```
+
+## The tools of the trade
+
+```{r}
+devtools::install_github("tidyverse/glue", force = TRUE)
+library(glue)
+```
+
+glueing `glue()`
+
+In base R we use paste(), but we can also use glue(), this function is executed in the global environment and returns the value
+
+```{r}
+My_name <- "Santiago"
+My_Age <- 31
+My_color <- "blue"
+
+glue("My name is {My_name}", "My age two years ago was {My_Age - 2}")
+```
+```{r}
+paste0("My name is ",My_name,", My age two years ago was ",My_Age - 2)
+```
+
+Indentation
+```{r}
+glue("
+     My name is
+          {My_name},
+My age two years ago was
+    {My_Age - 2}")
+```
+
+### Challenge
+
+Phrase: Today is Wednesday. October 29. 1986 and the sun shines
+Sys.Date()
+glue()
+
+```{r}
+day <- Sys.Date()
+glue("Today is {day}. and the sun shines")
+```
+
+We can make it faster by creating an object, class solution!
+```{r}
+phrase <- "Today is {Today_date}. and the sun shines"
+glue(phrase,
+     Today_date = Sys.Date())
+```
+
+change format
+```{r}
+glue(phrase,
+     Today_date = format(Sys.Date(), "%A, %B, %d, %Y"))
+```
+
+`glue_data` understand data.frames, so we can extract data for all values in a dataframe and "glue" them to a string
+
+```{r}
+singer_locations %>% 
+  glue_data("{artist_name} is from {city}.") %>% 
+  head()
+```
+
+### stringr
+
+Let's check at the possible options
+```{r}
+getNamespaceExports("stringr")
+```
+
+str_view provides all strings that matches a certain pattern
+
+```{r}
+getNamespaceExports("stringr") %>% 
+  str_view("str_")
+```
+
+```{r}
+getNamespaceExports("stringr") %>% 
+  str_subset("str_")
+```
+
+### Challenge
+
+Let's get all the places containing string "york"
+
+```{r}
+places %>% 
+  str_subset("york")
+```
+
+But, what if there are more cases with "York", for that we can use `str_to_lower()` which is looking for capital and lower case
+
+```{r}
+places %>% 
+  str_to_lower() %>% 
+  str_subset("york")
+```
+
+Bue we lose the ability to see the original string
+
+## REgular Expressions 
+sometimes, we want to find things that are similar to a certain pattern that we define
+
+things inside [ ] define any of the two options, 
+```{r}
+places %>% 
+  str_subset("[Yy]ork")
+```
+
+another funtion is coll(), which looks for more options, as for example not considering the case
+```{r}
+places %>% 
+  str_subset(coll("york", ignore_case = TRUE))
+```
+
+so far, we also getting "yorkshire", so another option to only get new york is using `$` which define the end of a string or `^` which define the start
+```{r}
+places %>% 
+  str_subset("York$")
+
+places %>% 
+  str_subset("^York")
+```
+
+another option `:digit:` will define any digits in a string
+Challenge: lets get all places containing digits
+
+```{r}
+"[:digit:]"
+places %>% 
+  str_subset("[:digit:]")
+```
+
+this is good to start cleaning a dataset, since we can identify mistakes and info that is not a city
+
+The point `.` is a wildcard that allows to identify any value with that condition
+```{r}
+places %>% 
+  str_subset("B.a")
+places %>% 
+  str_subset("B.a?")
+places %>% 
+  str_subset("B.a+")
+places %>% 
+  str_subset("B.a*") #* means zero one or more
+places %>% 
+  str_subset("[Nn]ew [Yy]ork")
+```
+
+There are a lot more regular expressions `str_`
+
+## HW use regular expressions and functions to clean up city places in dataframe
