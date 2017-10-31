@@ -5,6 +5,8 @@ date: '2017-10-31'
 output: github_document
 ---
 
+### Indexing a vector, purrr, map_functions
+
 An atomic vector is the one in which all elements are of the same type (not a list of mixed elements), for example
 
 ```{r}
@@ -56,4 +58,106 @@ z[2]
 z["trascendental"]
 z$trascendental
 ```
+
+Now, if we look at the typeof we see that we are only looking at the type of the variable, but if we want to access the content, we need [[...]]
+```{r}
+typeof(z["trascendental"])
+z[["trascendental"]]
+y[["double"]]
+y["double"]
+```
+
+#### for loops
+
+Consider how to square the integers 1 through n, with n <- 5
+```{r}
+n <- 5
+res <- rep(NA_integer_, n)
+for (i in seq_len(n)) {
+res[i] <- i ^ 2  
+}
+res
+```
+
+another option is just
+```{r}
+(1:n)^2
+```
+
+now, we take another vector
+```{r}
+exp(v_double)
+(l_doub <- as.list(v_double))
+```
+now, what if we want to elevated all the elements in l_doub
+```{r}
+exp(l_doub) #not possible
+```
+
+Let's start with `purrr`
+```{r}
+library(tidyverse)
+library(purrr)
+library(stringr)
+```
+
+we can use the function `map_dbl`
+```{r}
+map_dbl(l_doub, exp)
+```
+
+### challenge, use a `map_` and `stringr` function to split all the fruits that have two words in them to two separate character strings
+```{r}
+fruit
+str(fruit)
+
+fruit %>% 
+str_subset(" ") #not finished
+```
+
+Class solution
+```{r}
+#map_chr(fruit, str_split, " ")
+fruit %>% 
+  map(str_split, " ")
+
+fruit %>% 
+  map_chr(str_to_upper)
+```
+
+## Simplifying data from a [list](https://htmlpreview.github.io/?https://github.com/JoeyBernhardt/stat545-purrr/blob/master/purrr-lesson.html)
+```{r}
+library(repurrrsive)
+library(listviewer)
+library(jsonlite)
+library(dplyr)
+library(tibble)
+library(purrr)
+```
+
+We will use `gh_users` as an example to extract and index data from a list
+```{r}
+str(gh_users)
+jsonedit(gh_users) #allows to see the info in a viewer
+```
+
+start using map_ functions
+```{r}
+map(gh_users, "login") #by name
+gh_users %>% 
+  map(18) # by position
+```
+
+We want to pull out multiple things
+```{r}
+x <- map(gh_users, `[`, c("login", "name", "id", "location"))
+x #now we can index only the elements that we want
+```
+
+```{r}
+y <- map(gh_users, magrittr::extract, c("login", "name"))
+y
+```
+
+Try more map functions before next class... for example for calculating values such as `mean`
 
