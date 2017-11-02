@@ -5,7 +5,9 @@ date: '2017-11-02'
 output: github_document
 ---
 
-### nested lists are complicated objects
+### Nested information, lists...
+
+nested lists are complicated objects
 ```{r}
 library(tidyverse)
 library(purrr)
@@ -13,6 +15,7 @@ library(stringr)
 library(repurrrsive)
 library(listviewer)
 library(jsonlite)
+library(tibble)
 ```
 
 If we explore the following list, we can see that most 
@@ -21,5 +24,122 @@ If we explore the following list, we can see that most
 str(gh_repos)
 data("gh_repos") #run in to the environment
 gh_repos[[1]] #now R environment shows something
+
+#give a look at list
+View(gh_users)
+```
+
+extract information from lists
+
+### warmup challenge: extract information full name of first repo
+```{r}
+gh_repos %>% 
+  map_chr(list(1,"full_name"))
+
+gh_repos %>% map_chr(c(1,3))
+```
+
+We can use the position to find the second element in the second level
+```{r}
+gh_repos %>%
+  map_chr(c(2,2)) 
+```
+
+But, we can also specify the name of the variable
+```{r}
+gh_repos %>% 
+  map_chr(list(2,"name"))
+```
+
+The notation in `[ ]` for each element, should be something like the following, but map functions allows you to do the operation for all elements at once
+```{r}
+gh_repos[[2]][[2]][["name"]]
+```
+
+### challenge: get the owner id of fourth repo for each user (its of the type integer)
+```{r}
+gh_repos %>% 
+  map_int(list(4,"owner","id"))
+```
+
+#### dataframes
+
+how to look for the first level of a list for `str`
+```{r}
+str(gh_repos, max.level = 1)
+```
+
+Now, we have to create names to be able to create a dataframe
+```{r}
+u_id <- gh_repos %>% 
+  map_int(list(1, "owner", "id"))
+
+gh_repos_named <- gh_repos %>% 
+  set_names(u_id)  # we need to set names to these lists
+
+str(gh_repos_named, max.level = 1)
+```
+
+To create a dataframe we have to give names to the columns in that tibble
+```{r}
+gh_repos_df <- gh_repos_named %>% 
+  enframe("user_id", "repository_stuff")
+
+gh_repos_df
+```
+
+### challenge: now lets try to create an enframe dataframe but identifying by their owner login 
+
+```{r}
+login <- gh_repos %>% map_chr(list(1,"owner", "login"))
+gh_repos_login <- gh_repos %>% set_names(login)
+gh_login_df <- gh_repos_login %>% enframe("user_login", "repo_info")
+gh_login_df
+```
+
+From this we can use other functions, such as measure the length, or other functions
+
+```{r}
+gh_login_df %>% 
+  filter(user_login %in% c("masalmon", "leeper")) %>% 
+  mutate(number_of_repositories = length(repo_info))
+# here, length is unable to quantify what is inside the list
+
+gh_login_df %>% 
+  filter(user_login %in% c("masalmon", "leeper")) %>% 
+  mutate(number_of_repositories = map_int(repo_info,
+         length))
+```
+
+Now, from repurrrsive lets use one of the lists `got_chars`
+```{r}
+map(got_chars,"aliases")
+map(got_chars,"name")
+```
+
+Lets make a list of these two things together
+```{r}
+aliases_name <- set_names(map(got_chars, "aliases"),
+                          map(got_chars, "name"))
+
+# see the difference between these two
+length(aliases_name)
+map_int(aliases_name, length)
+```
+
+create a function
+```{r}
+collapse_by_comma <- function(vec_of_strings){
+  paste(vec_of_strings, collapse = ", ")
+}
+collapse_by_comma(c("first string", "second string"))
+
+### different ways to apply the same function, take the first element of a list, and apply a function to that 
+
+map(aliases_name, collapse_by_comma)
+map(aliases_name, 
+    function(v_o_s) paste(v_o_s, collapse = ", "))
+map(aliases_name, paste, collapse = ", ")
+map(aliases_name, ~ paste(.x), collapse = ", ")
 ```
 
