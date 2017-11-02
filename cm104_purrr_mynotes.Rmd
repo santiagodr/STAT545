@@ -1,0 +1,25 @@
+---
+title: "cm104_purrr_mynotes"
+author: "Santiago David"
+date: '2017-11-02'
+output: github_document
+---
+
+### nested lists are complicated objects
+```{r}
+library(tidyverse)
+library(purrr)
+library(stringr)
+library(repurrrsive)
+library(listviewer)
+library(jsonlite)
+```
+
+If we explore the following list, we can see that most 
+
+```{r}
+str(gh_repos)
+data("gh_repos") #run in to the environment
+gh_repos[[1]] #now R environment shows something
+```
+
