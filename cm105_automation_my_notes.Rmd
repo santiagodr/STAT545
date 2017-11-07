@@ -28,5 +28,7 @@ Use pattern rules. `%` matches any string and will run any file with the extensi
 
 Slides http://sjackman.ca/makefile-slides
 
-
+### Practice
+We created a new project called `make`, in this folder there are several output files produced from the automate tasks.
+Rstudio has a built in option that we activate by creating a plain txt file and configuration of build options.
 

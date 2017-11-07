@@ -1,0 +1,24 @@
+---
+title: "distribution of english word length"
+author: "Santiago David"
+date: '2017-11-07'
+output: 
+  html_document: 
+    keep_md: yes
+---
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(readr)
+```
+
+```{r read-data}
+en <- read_tsv("words.en.length",
+							 col_names = "Length")
+```
+
+
+```{r english-world-length-histogram}
+ggplot(en) + aes(x = Length) + geom_histogram(binwidth = 1)
+```
+
