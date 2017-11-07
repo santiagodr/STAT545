@@ -1,0 +1,32 @@
+---
+title: "cm105_automation_mynotes"
+author: "Santiago David"
+date: '2017-11-07'
+output: github_document
+---
+
+Guest lecture by Shaun Jackman
+
+### Automating Data Analysis Pipelines
+
+An analysis might have different stages with its specific inputs and outputs = do not modify your inputs `idempotent`.
+
+Advantages:
+- dont re run whole pipeline
+- divide up work amongst a group by assigning to each person stages
+- You can draw a graph of your pipeline
+
+First option is to just use R as the tool for automation
+Second option is to mix Rscripts with Shell
+
+Third option makefile (create a file with instructions for the pipe). It uses a dependency graph (pipeline). Order of dependencies can be different, depending on the output you need, and the analysis associated to that one.
+
+### Syntax of a makefile
+You can start with a Shell format, Rstudio also has a way to link and run a makefile and include the dependencies.
+Every command should have its own rule.
+Use pattern rules. `%` matches any string and will run any file with the extension.
+
+Slides http://sjackman.ca/makefile-slides
+
+
+
