@@ -21,3 +21,11 @@ To run the file we use the `Build` tab on the right panel and `Build All`
 If we need to clean the file. Remember that we created a rule for `clean`, and we can then use the `clean all` option to apply that rule.
 
 tips: this command `$<` stands for the dependencies and `$@` stands for the output, and might be useful when typos are creating errors, since you dont have to write the names of the files
+
+```{r}
+library(remake)
+```
+
+Remake allows you to organize a file with a simple route of dependencies and outputs
+
+remake::make()

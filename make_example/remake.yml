@@ -1,0 +1,15 @@
+sources:
+  - Rscripts/my_scripts.R #example of a script with functions that I need to source
+  - Rscripts/plotting.R
+  
+packages:
+  - ggplot2
+  - tidyverse
+
+targets:
+  all:
+    depends: word.en.html
+    
+  words.en.html:
+    command: rmarkdown::render("words.en.Rmd")
+    depends: word.en.Rmd
