@@ -1,0 +1,23 @@
+---
+title: "cm106_make_my_notes"
+author: "Santiago David"
+date: '2017-11-09'
+output: github_document
+---
+
+We need the package "remake"
+```{r}
+devtools::install_github("richfitz/remake")
+```
+
+This is a practice of the same example we did last class.
+- Use Build or Project options to establish the `build tools` and the `makefile` under those options.
+- if the directory is not specified, I can use the console and `which make` to find the specific route
+- the `txt` makefile is run by Shell not by R, so the commands in the text must be familiar to shell. For example `curl`, `tr`, `awk` are specific commands to do an action. and `>` will create an output.
+- `Rscript` is a command to run R actions outside of R. So, we provide a string.
+
+
+To run the file we use the `Build` tab on the right panel and `Build All`
+If we need to clean the file. Remember that we created a rule for `clean`, and we can then use the `clean all` option to apply that rule.
+
+tips: this command `$<` stands for the dependencies and `$@` stands for the output, and might be useful when typos are creating errors, since you dont have to write the names of the files
