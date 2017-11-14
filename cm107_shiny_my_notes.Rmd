@@ -1,0 +1,12 @@
+---
+title: "cm107_my_notes"
+author: "Santiago David"
+date: '2017-11-14'
+output: html_document
+---
+
+To practice with Shiny apps, we need several packages
+```{r}
+install.packages("shiny")
+```
+
