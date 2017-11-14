@@ -7,6 +7,33 @@ output: html_document
 
 To practice with Shiny apps, we need several packages
 ```{r}
-install.packages("shiny")
+#install.packages("shiny")
+library(shiny)
 ```
+
+We can start by exploring example
+```{r}
+runExample("01_hello")
+```
+
+We can stop the file from executing... this is a browser working in your computer
+
+Now, we need to prepare a user interface and a server...
+
+```{r}
+my_ui <- fluidPage()
+my_server <- function(input, output){
+  
+}
+shinyApp(ui = my_ui, server = my_server)
+```
+
+We have to save this file in a separate R file in a specific folder, and we name the file `App.R`. When we do that, there will be a `Run` option in the file.
+This websites are hoted locally, there are still no in the internet.
+This files understand html, so we can use html notation
+
+The inputs come from the user interface, and become available to the server, by using an argument `input`. We have to use `render` to produce some output from the input and save it. We always need to close the render with a curly parenthesis {}. So basically what this is doing, is taking inputs sending them to the server and asking it to do something.
+So, Shiny is basically creating that interface for html language based on the information we are sending...
+
+Shiny focuses on the data analysis and provide a structure for displaying that rely on html
 
