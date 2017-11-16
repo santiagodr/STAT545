@@ -44,3 +44,35 @@ Its recommended to separate the ui.R file from the server.R file
 The UI displays the outputs
 The server takes inputs and create some outputs
 
+You can adjust size of objects such as image
+```{r}
+mainPanel(plotOutput("hist_content"),
+            img(src = "kitten.jpeg"), width = ("100%")) #or with pixels
+```
+
+In our example, we created a filter to the plot, so that the plot changes everytime we change the conditions.
+```{r}
+filter(Price >= input$priceIn[1],
+           Price <= input$priceIn[2],
+           Type == input$typeIn)
+```
+
+Basically, we modified the inputs in the ui.R and use those "objects" as the filtering rule for the graph and table, 
+because we want to use this rule several time, we can save it as an object.
+
+When you have objects that depends on the inputs, you have to make those objects "reactive", such as for example in the example
+```{r}
+filtered <- reactive({
+    bcl_data %>% 
+    filter(Price >= input$priceIn[1],
+           Price <= input$priceIn[2],
+           Type == input$typeIn)
+  })
+```
+
+### Now getting public
+
+we need Shinyapps.io ---> READ that material, I used Github account to log in
+
+
+
