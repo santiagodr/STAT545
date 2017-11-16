@@ -38,3 +38,9 @@ So, Shiny is basically creating that interface for html language based on the in
 Shiny focuses on the data analysis and provide a structure for displaying that rely on html
 
 Its recommended to separate the ui.R file from the server.R file
+
+#### cm108 - 16 Novemeber 2017
+
+The UI displays the outputs
+The server takes inputs and create some outputs
+

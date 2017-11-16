@@ -6,5 +6,6 @@ ui <- fluidPage(
   
   sidebarPanel("My side bar"),
   
-  plotOutput("hist_content")
+  mainPanel(plotOutput("hist_content"),
+            img(src = "kitten.jpeg"))
 )
