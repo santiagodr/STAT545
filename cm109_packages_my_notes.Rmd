@@ -1,0 +1,17 @@
+---
+title: "cm109_packages"
+author: "Santiago David"
+date: '2017-11-21'
+output: github_document
+---
+
+We can create a package directly by creating a new project in R that creates a package.
+It gives you a starting point of files and routes
+You need `roxygen2` and the function `roxygen2::roxygenize()` to start the package and use build to run the package functions
+
+- `check` is a good option to check that examples and things in the package are running, it will give you errors if things are not working
+
+- `function dependencies`:
+if you add a new function, you will have to include `# export` to be able to rexogynize, or you can make it an internal function, which means, it is not available to the user
+
+- `testthat`: this is a sanity check, you can create a folder that creates `testthat` checks... you have to use `devtools::test()`
