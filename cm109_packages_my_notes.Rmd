@@ -15,3 +15,20 @@ You need `roxygen2` and the function `roxygen2::roxygenize()` to start the packa
 if you add a new function, you will have to include `# export` to be able to rexogynize, or you can make it an internal function, which means, it is not available to the user
 
 - `testthat`: this is a sanity check, you can create a folder that creates `testthat` checks... you have to use `devtools::test()`
+
+#### 23/Nov/2017
+
+- Documentation is based on this special character `#'`
+- To test your package you can use the `check button` next to the build tab, or the `testthat`
+- one type of documentation is using `devtools::use_package_doc()`
+- the other one is `devtools::use_vignette("my_vignette")`
+  For some reason after you knit and use `devtools::build_vignettes()`, it creates a file for  vignettes but include the file in .gitignore, so you have to manually remove it from that    file
+  
+- Also you can use README file by executing `devtools::use_readme_rmd()`
+
+
+#### dependencies
+if one of your functions depend on another package you can use `devtools::use_package("package_name")` to include that in your description
+
+#### adding data to your package,
+for this you can use `devtools::use_data(foo, bar)`, but you also have to create documentation for this

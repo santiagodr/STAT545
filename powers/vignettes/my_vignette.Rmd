@@ -1,0 +1,30 @@
+---
+title: "powers_documentation"
+author: "Santiago David"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The `powers` package is a simple exercise that computes square power to a term
+
+```{r}
+library(powers)
+```
+
+
+Let's check an example
+instead of using:
+```{r}
+list1 <- list(1:20)
+lapply(list1, function (x) x^2)
+```
+
+We can use:
+```{r}
+lapply(list1, square)
+```
+
