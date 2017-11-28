@@ -1,0 +1,84 @@
+---
+title: "web_scraping"
+author: "Santiago David"
+date: '2017-11-28'
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We can use Firexox developers, to look for specific code related to areas of the webpage
+
+
+```{r}
+library(tidyverse)
+library(magrittr)
+library(purrr)
+library(glue)
+library(stringr)
+library(rvest)
+library(xml2)
+```
+
+Now, we extract the info from the web
+```{r}
+url_titles <- "https://www.musixmatch.com/artist/Straight-Line-Stitch#"
+page_title <- read_html(url_titles)
+```
+
+Lets check this object
+```{r}
+page_title %>% 
+  html_nodes(css = ".title") %>% 
+  html_text()
+```
+
+now, the database
+
+```{r}
+SLS_df <- data_frame(Band = "Straight Line Stitch",
+                     Title = page_title %>%
+                       html_nodes(css = ".title") %>%
+                       html_text(),
+                     Link = glue('https://www.musixmatch.com/lyrics/{Band}/{Title}') %>% 
+                       str_replace_all(" ","-"))
+SLS_df$Link[1]
+```
+
+
+
+```{r}
+SLS_df %>% 
+  mutate(Lyrics = map(Link, read_html))
+SLS_df %>% View()
+```
+
+
+We have to create a function to extract the info from the link, check function!!!
+
+```{r}
+get_lyrics <- function(lyr_link){
+  lyr_link %>% 
+  read_html() %>% 
+  html_nodes(css = ".mxm-lyrics_content") %>% 
+  html_text() %>% 
+  collapse(sep = "\n") %>% 
+  return()
+}
+```
+
+Test the function from one element and then you map the function in all elements
+
+```{r}
+SLS_df$Link[1] %>% get_lyrics()
+```
+
+If we want to do it for someone else
+
+
+```{r}
+
+```
+
