@@ -178,4 +178,33 @@ ATCR_lyrics %>%
   unnest()
 ```
 
+#### BONUS sentiment analysis *didnt work
+```{r}
+#install.packages("tidytext")
+library(tidytext)
+afinn <- get_sentiments("afinn")
+AH_lyrics %>% 
+  unnest_tokens(word, Lyrics) %>% #split words
+  anti_join(stop_words, by = "word") %>% #remove all words
+  inner_join(afinn, by = "word") %>% #stitch scores
+  group_by(Title) %>% #and for each song
+  summarise(Sentiment_score = sum(score))
+```
+
+
+**** APIs
+APIs is a set of rules that my computer uses to speak to a webpage
+As an example we can explore the OMDbAPI which is an API for movies
+ 
+This APIs use language JSON 
+```{r}
+library(httr)
+thor_result <- GET("http://xxxxxxx")
+```
+ 
+```{r}
+library(rebird)
+ebirdregion(region = "COLOMBIA", species = 'Hypopyrrhus pyrohypogaster')
+```
+
 
