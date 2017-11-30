@@ -75,7 +75,7 @@ Test the function from one element and then you map the function in all elements
 SLS_df$Link[1] %>% get_lyrics()
 ```
 
-If we want to do it for someone else
+If we want to do it for another artist
 
 
 ```{r}

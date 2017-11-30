@@ -1,0 +1,181 @@
+---
+title: "Scraping Work_gdvr example"
+author: "Santiago David"
+date: '2017-11-30'
+output: github_document
+---
+
+Packages
+```{r}
+library(tidyverse)
+library(magrittr)
+library(purrr)
+library(glue)
+library(stringr)
+library(rvest)
+library(xml2)
+```
+
+Titles
+
+```{r}
+url_titles <- "https://www.musixmatch.com/artist/Straight-Line-Stitch#"
+
+page_title <- read_html(url_titles)
+page_title
+```
+
+The CSS selector
+```{r}
+page_title %>%
+  html_nodes(".title")
+```
+
+```{r}
+page_title %>%
+  html_nodes(".title") %>%
+  html_text()
+```
+
+We want the lyrics
+```{r}
+SLS_df <- data_frame(Band = "Straight Line Stitch",
+                     Title = page_title %>%
+                       html_nodes(".title") %>%
+                       html_text())
+```
+
+```{r}
+SLS_lyrics <- SLS_df %>% mutate(Link = glue('https://www.musixmatch.com/lyrics/{Band}/{Title}') %>%
+                           str_replace_all(" ","-"))
+```
+
+```{r}
+page_title %>%
+  html_nodes(".title") %>%
+  html_attrs() %>%
+  glimpse()
+```
+
+```{r}
+page_title %>%
+  html_nodes(".title") %>%
+  html_attrs() %>%
+  map_chr("href")
+```
+
+using rvest
+```{r}
+page_title %>%
+  html_nodes(".title") %>%
+  html_attr("href")
+```
+
+```{r}
+SLS_df %<>%
+  mutate(Link = page_title %>%
+  html_nodes(".title") %>%
+  html_attr("href"))
+```
+
+And purrr
+```{r}
+url_song <- glue("https://www.musixmatch.com{SLS_df$Link[1]}")
+
+url_song
+```
+
+```{r}
+url_song %>%
+  read_html() %>%
+  html_nodes(".mxm-lyrics__content") %>%
+  html_text()
+```
+
+collapse() and glueing() the part that is missing in the link, which is the www...
+
+```{r}
+get_lyrics <- function(link){
+  glue("https://www.musixmatch.com{link}") %>%
+   read_html() %>%
+   html_nodes(".mxm-lyrics__content") %>%
+   html_text() %>%
+   collapse(sep = "\n") %>%
+    return()
+}
+```
+
+```{r}
+SLS_df$Link[3] %>%
+  get_lyrics()
+```
+
+```{r}
+SLS_df %<>%
+  mutate(Lyrics = map_chr(Link, get_lyrics))
+```
+
+Another artist
+```{r}
+AH_url <- "https://www.musixmatch.com/artist/Angel-Haze"
+
+AH_lyrics <- data_frame(Band = "Angel Haze",
+                        
+                         Title = AH_url %>%
+                          read_html() %>%
+                           html_nodes(css = ".title") %>%
+                           html_text(),
+                        
+                         Link = AH_url %>%
+                          read_html() %>%
+                           html_nodes(css = ".title") %>%
+                          html_attr("href")
+                        )
+```
+
+
+Getting the lyrics, we use a map_chr() function to run the function for all the titles
+```{r}
+AH_lyrics %>% 
+  mutate(Lyrics = map_chr(Link, get_lyrics))
+```
+
+Another example with a more complicated scenario
+Another artist called A tribe called red, in which some lyrics doesn't exist
+
+```{r}
+ATCR_url <- "https://www.musixmatch.com/artist/A-Tribe-Called-Red"
+
+ATCR_lyrics <- data_frame(Band = "A Tribe Called Red",
+                        
+                         Title = ATCR_url %>%
+                          read_html() %>%
+                           html_nodes(css = ".title") %>%
+                           html_text(),
+                        
+                         Link = ATCR_url %>%
+                          read_html() %>%
+                           html_nodes(css = ".title") %>%
+                          html_attr("href")
+                        )
+```
+
+Now, the previous function to get lyrics will not work, because there are missing lyrics
+```{r}
+ATCR_lyrics %>% 
+  mutate(Lyrics = map_chr(Link, get_lyrics))
+```
+We need to create a new function that uses `purrr::possibly` to assign an NA when another function doesn't work
+
+```{r}
+get_lyrics_safe <- purrr::possibly(get_lyrics, "None available")
+```
+
+but instead of using `map_chr` we just use `map`
+```{r}
+ATCR_lyrics %>% 
+  mutate(Lyrics = map(Link, get_lyrics_safe)) %>% 
+  unnest()
+```
+
+
